@@ -26,6 +26,10 @@
 
 #import "Radio.h"
 
+@interface Radio()
+    @property (assign, nonatomic) AudioFileTypeID streamType;
+@end
+
 @implementation Radio
 
 #define DEBUG_LOG 1
@@ -49,7 +53,9 @@
 	return self;
 }
 
-- (BOOL)connect: (NSString *)connectUrl withDelegate:(NSObject <RadioDelegate> *)delegate withGain:(float)gain {
+- (BOOL)connect: (NSString *)connectUrl withDelegate:(NSObject <RadioDelegate> *)delegate withGain:(float)gain streamType:(AudioFileTypeID)streamType {
+    self.streamType = streamType;
+    
 	if (currentPacket == nil) {
 		currentPacket = [[NSMutableData alloc] init];
 	}
@@ -76,7 +82,7 @@
 	audioTotalBytes = 0;
 	audioCurrentGain = gain;
 	
-	AudioFileStreamOpen((__bridge void *)(self),  &PropertyListener, &PacketsProc,  kAudioFileMP3Type, &audioStreamID);
+	AudioFileStreamOpen((__bridge void *)(self),  &PropertyListener, &PacketsProc,  self.streamType, &audioStreamID);
 	
     NSError *audio_error;
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback withOptions:0 error:&audio_error];
@@ -154,7 +160,7 @@
 		attemptCount = 0;
 	}
 	else {
-		[self connect:url withDelegate:radioDelegate withGain:audioCurrentGain];
+		[self connect:url withDelegate:radioDelegate withGain:audioCurrentGain streamType:self.streamType];
 	}
 }
 
@@ -491,7 +497,7 @@ static void PacketsProc(void *inClientData,
     }
 	if (!audioStarted) {
 		audioPaused = NO;
-		[self connect:url withDelegate:radioDelegate withGain:audioCurrentGain];
+		[self connect:url withDelegate:radioDelegate withGain:audioCurrentGain streamType:self.streamType];
 		buffering = YES;
         if (radioDelegate && [radioDelegate respondsToSelector:@selector(updateBuffering:)]) {
             [radioDelegate updateBuffering:YES];

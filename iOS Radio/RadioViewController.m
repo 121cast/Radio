@@ -43,7 +43,7 @@
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
     radio = [[Radio alloc] init:@"my app"];
-    [radio connect:STREAM_URL withDelegate:self withGain:(1.0)];
+    [radio connect:STREAM_URL withDelegate:self withGain:(1.0) streamType:kAudioFileMP3Type];
     playing = YES;
     
     button = [UIButton buttonWithType:UIButtonTypeCustom];

@@ -80,7 +80,7 @@
 }
 
 - (id)init:(NSString *)userAgent;
-- (BOOL)connect:(NSString *)url withDelegate:(NSObject<RadioDelegate> *)delegate withGain:(float)gain;
+- (BOOL)connect:(NSString *)url withDelegate:(NSObject<RadioDelegate> *)delegate withGain:(float)gain streamType:(AudioFileTypeID)streamType;
 - (void)updateGain:(float)value;
 - (void)updatePlay:(BOOL)play;
 - (void)pause;
